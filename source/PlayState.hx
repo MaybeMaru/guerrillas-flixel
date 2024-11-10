@@ -27,6 +27,7 @@ class PlayState extends FlxState
 		sky.setGraphicSize(FlxG.width, FlxG.height);
 		sky.updateHitbox();
 		sky.scrollFactor.set(0.4, 0.4);
+		sky.color = 0xff5e5e5e;
 		add(sky);
 
 		FlxG.mouse.visible = false;
@@ -34,10 +35,10 @@ class PlayState extends FlxState
 		objects = new FlxGroup();
 		add(objects);
 
-		opponent = new Opponent();
-		objects.add(opponent);
-
 		player = new Player();
+		opponent = new Opponent(player);
+
+		objects.add(opponent);
 		objects.add(player);
 
 		scene = new Scene();
@@ -57,7 +58,7 @@ class PlayState extends FlxState
 
 	function zoomCamera()
 	{
-		var dist = player.getMidpoint().distanceTo(opponent.getMidpoint());
+		var dist = player.getMidpoint(FlxPoint.weak()).distanceTo(opponent.getMidpoint(FlxPoint.weak()));
 
 		var minDist = 800;
 		var minZoom = 0.35;

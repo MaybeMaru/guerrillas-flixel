@@ -6,6 +6,7 @@ import flixel.FlxState;
 import flixel.group.FlxGroup;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
+import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
@@ -19,33 +20,56 @@ class MapState extends FlxState
 	override function create()
 	{
 		super.create();
-		var map = new FlxSprite().loadGraphic("assets/images/spainMap.png");
-		map.color = 0xff5e5e5e;
-		map.setGraphicSize(FlxG.width, FlxG.height);
+		var map = new FlxSprite(0, 0).loadGraphic("assets/images/spainMap.png");
+		map.setGraphicSize(FlxG.width);
 		map.updateHitbox();
+		map.screenCenter();
 		add(map);
 
 		points = new FlxTypedGroup<MapPoint>();
 		add(points);
 
-		points.add(new MapPoint(260, 200, {
-			name: "Madrid"
+		points.add(new MapPoint(275, 205, {
+			name: "Madrid",
+			year: 1808,
+			player: "El Empecinado"
 		}));
 
-		points.add(new MapPoint(255, 115, {
-			name: "Burgos"
+		points.add(new MapPoint(265, 115, {
+			name: "Burgos",
+			year: 1809,
+			player: "El Cura Merino"
 		}));
 
-		points.add(new MapPoint(365, 85, {
-			name: "Pirienos"
+		points.add(new MapPoint(365, 95, {
+			name: "Navarra",
+			year: 1810,
+			player: "Espoz y Mina"
 		}));
+
+		FlxG.sound.playMusic("assets/music/pepe-botellas.ogg");
+		FlxG.sound.music.fadeIn(1, 0, 0.8);
 
 		FlxG.mouse.visible = true;
+		FlxG.mouse.enabled = true;
 	}
 
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
+
+		if (!onTrans && FlxG.keys.justPressed.ESCAPE)
+		{
+			onTrans = true;
+			FlxG.mouse.visible = false;
+			FlxG.mouse.enabled = false;
+
+			FlxG.sound.music.fadeOut(0.3);
+			FlxG.camera.fade(FlxColor.BLACK, 0.3, false, () ->
+			{
+				FlxG.switchState(new TitleState());
+			});
+		}
 
 		if (onTrans)
 			return;
@@ -69,6 +93,7 @@ class MapState extends FlxState
 		var mid = point.point.getMidpoint();
 		FlxTween.tween(FlxG.camera.scroll, {x: mid.x - (FlxG.width / 2), y: mid.y - (FlxG.height / 2)}, 1, {ease: FlxEase.quadOut});
 		FlxTween.tween(FlxG.camera, {zoom: 20}, 1, {ease: FlxEase.quadIn});
+		FlxG.sound.music.fadeOut(0.8);
 		FlxG.camera.fade(FlxColor.BLACK, 0.95, () ->
 		{
 			this.visible = false;
@@ -82,12 +107,17 @@ class MapState extends FlxState
 
 typedef PointData =
 {
-	name:String
+	name:String,
+	year:Int,
+	player:String
 }
 
 class MapPoint extends FlxGroup
 {
 	public var point:FlxSprite;
+
+	var box:FlxSprite;
+	var txt:FlxText;
 
 	public function new(X:Float, Y:Float, data:PointData)
 	{
@@ -98,11 +128,19 @@ class MapPoint extends FlxGroup
 		point.x -= point.width / 2;
 		point.y -= point.height / 2;
 		add(point);
+
+		box = new FlxSprite(X - (75 / 2), Y + point.height + 5).makeGraphic(75, 25);
+		add(box);
+
+		txt = new FlxText(box.x, box.y, 0, '${data.name}\n${data.year}');
+		txt.color = FlxColor.BLACK;
+		add(txt);
 	}
 
 	public var overlap:Bool = false;
 
 	var last:Bool = false;
+	var lerp:Float = 0;
 
 	override function update(elapsed:Float)
 	{
@@ -110,6 +148,14 @@ class MapPoint extends FlxGroup
 
 		overlap = FlxG.mouse.overlaps(point);
 		point.color = overlap ? FlxColor.RED : FlxColor.WHITE;
+		lerp = FlxMath.lerp(lerp, overlap ? 1 : 0, elapsed * 20);
+
+		box.offset.y = 0;
+		txt.alpha = box.alpha = lerp;
+		txt.scale.x = box.scale.x = lerp;
+
+		var scl = Math.max(0.5, lerp);
+		point.scale.set(scl, scl);
 
 		if (overlap != last)
 		{

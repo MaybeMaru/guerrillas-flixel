@@ -7,16 +7,22 @@ import flixel.math.FlxPoint;
 
 class Player extends Person
 {
+	public function new()
+	{
+		super();
+		x += 200;
+	}
+
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
 
 		if (FlxG.keys.pressed.LEFT)
-			velocity.x -= moveSpeed * elapsed * 20;
+			move(-1);
 		else if (FlxG.keys.pressed.RIGHT)
-			velocity.x += moveSpeed * elapsed * 20;
+			move(1);
 		else
-			velocity.x = FlxMath.lerp(velocity.x, 0, elapsed * 20);
+			move(0);
 
 		if (inFloor && FlxG.keys.justPressed.UP)
 			jump();
