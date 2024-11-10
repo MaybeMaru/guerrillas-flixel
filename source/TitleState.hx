@@ -14,16 +14,11 @@ class TitleState extends FlxState
 	var items:Array<FlxText> = [];
 	var list = ["Jugar", "Creditos", "Salir"];
 
+	public static var wentBack:Bool = true;
+
 	override function create()
 	{
 		super.create();
-
-		/*var emmiter = new FlxEmitter();
-			emmiter.setPosition();
-			emmiter.setSize(FlxG.width, FlxG.height);
-			emmiter.makeParticles();
-			emmiter.start(false);
-			add(emmiter); */
 
 		var war = new FlxBackdrop("assets/images/war.png", X);
 		war.x += FlxG.width / 1.5;
@@ -59,8 +54,12 @@ class TitleState extends FlxState
 
 		changeSelection(0);
 
-		FlxG.sound.playMusic("assets/music/sitios-zaragoza.ogg");
-		FlxG.sound.music.fadeIn();
+		if (wentBack)
+		{
+			FlxG.sound.playMusic("assets/music/sitios-zaragoza.ogg");
+			FlxG.sound.music.fadeIn();
+			wentBack = false;
+		}
 
 		FlxG.mouse.visible = false;
 		FlxG.mouse.enabled = false;
@@ -68,7 +67,7 @@ class TitleState extends FlxState
 		FlxG.camera.fade(FlxColor.BLACK, 0.3, true);
 	}
 
-	var curSelection:Int = 0;
+	static var curSelection:Int = 0;
 
 	function changeSelection(change:Int)
 	{
@@ -81,9 +80,14 @@ class TitleState extends FlxState
 		}
 	}
 
+	var clicked:Bool = false;
+
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
+
+		if (clicked)
+			return;
 
 		if (FlxG.keys.justPressed.ESCAPE)
 		{
@@ -99,15 +103,23 @@ class TitleState extends FlxState
 
 		if (FlxG.keys.justPressed.ENTER)
 		{
-			switch (curSelection)
+			clicked = true;
+
+			if (curSelection == 0)
+				FlxG.sound.music.fadeOut(0.333);
+
+			FlxG.camera.fade(FlxColor.BLACK, 0.333, false, () ->
 			{
-				case 0:
-					FlxG.switchState(new MapState());
-				case 1:
-					FlxG.switchState(null); // Credits state
-				case 2:
-					System.exit(0);
-			}
+				switch (curSelection)
+				{
+					case 0:
+						FlxG.switchState(new MapState());
+					case 1:
+						FlxG.switchState(new CreditsState());
+					case 2:
+						System.exit(0);
+				}
+			});
 		}
 	}
 }

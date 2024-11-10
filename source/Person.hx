@@ -16,7 +16,18 @@ class Person extends FlxSprite
 	{
 		super();
 
-		makeGraphic(60, 120);
+		loadGraphic("assets/images/characters/test.png", true, 15, 30);
+
+		animation.add("idle", [0]);
+		animation.add("jump", [1]);
+		animation.add("punch1", [2]);
+		animation.add("punch2", [3]);
+		animation.add("shield", [4]);
+
+		animation.play("idle");
+		updateHitbox();
+
+		setGraphicSize(60, 120);
 		updateHitbox();
 
 		y = 301;
@@ -25,22 +36,41 @@ class Person extends FlxSprite
 		acceleration.y = 1000;
 		maxVelocity.y = jumpForce;
 		maxVelocity.x = moveSpeed;
+
+		setFacingFlip(LEFT, false, false);
+		setFacingFlip(RIGHT, true, false);
 	}
+
+	var lastInFloor:Bool = false;
 
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
 		inFloor = (y >= 300);
+
+		if (lastInFloor != inFloor)
+		{
+			lastInFloor = inFloor;
+
+			if (inFloor)
+				animation.play("idle");
+		}
 	}
 
 	function shield()
 	{
-		trace("OH FUCK");
+		animation.play("shield", true);
 	}
+
+	var attc:Int = 0;
 
 	function attack()
 	{
-		trace("PUNCH");
+		attc++;
+		attc %= 2;
+
+		animation.play("punch" + (attc + 1), true);
+		FlxG.sound.play("assets/sounds/hit" + FlxG.random.int(1, 3) + ".ogg").pitch = FlxG.random.float(0.9, 1.1);
 	}
 
 	var accelSpeed:Float = 20;
@@ -63,5 +93,6 @@ class Person extends FlxSprite
 		y--;
 		velocity.y = -jumpForce;
 		inFloor = false;
+		animation.play("jump", true);
 	}
 }

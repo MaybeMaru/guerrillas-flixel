@@ -30,6 +30,21 @@ class Opponent extends Person
 	var attackCooldown:Float = 0;
 	var jumpCooldown:Float = 0;
 
+	override function attack()
+	{
+		var playerMidpoint = player.getMidpoint();
+		var oppMidpoint = this.getMidpoint();
+
+		var distX = Math.abs(playerMidpoint.x - oppMidpoint.x);
+		var distY = Math.abs(playerMidpoint.y - oppMidpoint.y);
+
+		if (distX <= 90 && distY <= 20)
+		{
+			player.life -= 10;
+			super.attack();
+		}
+	}
+
 	function logic(elapsed:Float)
 	{
 		if (approachCooldown > 0)

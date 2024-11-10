@@ -20,6 +20,7 @@ class MapState extends FlxState
 	override function create()
 	{
 		super.create();
+		TitleState.wentBack = true;
 		var map = new FlxSprite(0, 0).loadGraphic("assets/images/spainMap.png");
 		map.setGraphicSize(FlxG.width);
 		map.updateHitbox();
@@ -32,21 +33,37 @@ class MapState extends FlxState
 		points.add(new MapPoint(275, 205, {
 			name: "Madrid",
 			year: 1808,
-			player: "El Empecinado"
+			present: {
+				player: "juan",
+				playerDescription: 'Juan Martín Díez\n\n"El Empecinado"\nMilitar español\n1775-1825',
+				enemy: "frances1",
+				enemyDescription: 'Soldado francés #003\n\n"Baguette Baguette Cruasán"',
+			}
 		}));
 
 		points.add(new MapPoint(265, 115, {
 			name: "Burgos",
 			year: 1809,
-			player: "El Cura Merino"
+			present: {
+				player: "jeronimo",
+				playerDescription: 'Jerónimo Merino\n\n"El Cura Merino"\nSacerdote\n1769-1844',
+				enemy: "frances2",
+				enemyDescription: 'Soldado francés #069\n\n"Donemuah Torre Eiffel"',
+			}
 		}));
 
 		points.add(new MapPoint(365, 95, {
 			name: "Navarra",
 			year: 1810,
-			player: "Espoz y Mina"
+			present: {
+				player: "espoz",
+				playerDescription: 'Francisco Espoz Illundáin\n\n"Espoz y Mina"\nMilitar español\n1781-1836',
+				enemy: "frances3",
+				enemyDescription: 'Soldado francés #007\n\n"Mon plus grand cauchemar, une brosse à dents."',
+			}
 		}));
 
+		FlxG.camera.fade(FlxColor.BLACK, 0.3, true);
 		FlxG.sound.playMusic("assets/music/pepe-botellas.ogg");
 		FlxG.sound.music.fadeIn(1, 0, 0.8);
 
@@ -67,7 +84,11 @@ class MapState extends FlxState
 			FlxG.sound.music.fadeOut(0.3);
 			FlxG.camera.fade(FlxColor.BLACK, 0.3, false, () ->
 			{
-				FlxG.switchState(new TitleState());
+				this.visible = false;
+				new FlxTimer().start(0.333, (tmr) ->
+				{
+					FlxG.switchState(new TitleState());
+				});
 			});
 		}
 
@@ -99,7 +120,7 @@ class MapState extends FlxState
 			this.visible = false;
 			new FlxTimer().start(0.333, (tmr) ->
 			{
-				FlxG.switchState(new PlayState());
+				FlxG.switchState(new PlayState(point.data));
 			});
 		});
 	}
@@ -109,12 +130,21 @@ typedef PointData =
 {
 	name:String,
 	year:Int,
-	player:String
+	present:PresentData
+}
+
+typedef PresentData =
+{
+	player:String,
+	enemy:String,
+	playerDescription:String,
+	enemyDescription:String
 }
 
 class MapPoint extends FlxGroup
 {
 	public var point:FlxSprite;
+	public var data:PointData;
 
 	var box:FlxSprite;
 	var txt:FlxText;
@@ -122,6 +152,8 @@ class MapPoint extends FlxGroup
 	public function new(X:Float, Y:Float, data:PointData)
 	{
 		super();
+
+		this.data = data;
 
 		point = new FlxSprite(X, Y).makeGraphic(25, 25, FlxColor.WHITE);
 		point.updateHitbox();
