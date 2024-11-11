@@ -51,7 +51,6 @@ class PlayState extends FlxState
 		add(sky);
 
 		FlxG.camera.bgColor = FlxColor.GRAY;
-
 		FlxG.mouse.visible = false;
 
 		objects = new FlxGroup();
@@ -59,6 +58,7 @@ class PlayState extends FlxState
 
 		player = new Player();
 		opponent = new Opponent(player);
+		player.opponent = opponent;
 
 		objects.add(opponent);
 		objects.add(player);

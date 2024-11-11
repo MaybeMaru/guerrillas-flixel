@@ -25,7 +25,9 @@ class CreditsState extends FlxState
 
 		var txt = new FlxText(25, 25, FlxG.width - 50);
 		txt.setFormat("assets/fonts/Ancient Medium.ttf", 32);
-		txt.text = "That pussy got me screamin, cryin, pissin, shittin, shoothin ropes";
+		txt.text = 'Creado por
+		Inspirado en la Guerra de la Independencia Española
+		';
 		add(txt);
 
 		FlxG.camera.fade(FlxColor.BLACK, 0.3, true);

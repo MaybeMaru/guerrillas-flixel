@@ -17,6 +17,8 @@ class Opponent extends Person
 		this.player = player;
 		slipResistance = 7.5;
 		x -= 200;
+
+		retreatCooldown = FlxG.random.float(3, 6);
 	}
 
 	override function update(elapsed:Float)
@@ -30,7 +32,7 @@ class Opponent extends Person
 	var attackCooldown:Float = 0;
 	var jumpCooldown:Float = 0;
 
-	override function attack()
+	override function attack(hit:Bool)
 	{
 		var playerMidpoint = player.getMidpoint();
 		var oppMidpoint = this.getMidpoint();
@@ -38,20 +40,50 @@ class Opponent extends Person
 		var distX = Math.abs(playerMidpoint.x - oppMidpoint.x);
 		var distY = Math.abs(playerMidpoint.y - oppMidpoint.y);
 
-		if (distX <= 90 && distY <= 20)
+		if (!player.inShield && distX <= 90 && distY <= 20)
 		{
-			player.life -= 10;
-			super.attack();
+			player.hit();
+			super.attack(true);
+		}
+		else
+		{
+			super.attack(false);
 		}
 	}
+
+	override function hit()
+	{
+		super.hit();
+		retreatCooldown -= FlxG.random.float(0.1, 0.3); // Recommend the opponent to back up
+	}
+
+	var escapeTimer:Float = 0;
 
 	function logic(elapsed:Float)
 	{
 		if (approachCooldown > 0)
 			approachCooldown -= elapsed;
 
-		if (retreatCooldown > 0)
+		if (retreatCooldown > 0 || retreatCooldown < 0)
+		{
 			retreatCooldown -= elapsed;
+
+			if (retreatCooldown <= 0)
+			{
+				if (FlxG.random.bool(0.35))
+				{
+					var doEscape = FlxG.random.bool(Math.abs(100 - life));
+					retreatCooldown = doEscape ? FlxG.random.float(0.2, 0.6) : FlxG.random.float(1, 2.5);
+
+					if (doEscape)
+						escapeTimer = FlxG.random.float(0.2, 0.4);
+				}
+				else
+				{
+					retreatCooldown = FlxG.random.float(1, 2.5);
+				}
+			}
+		}
 
 		if (attackCooldown > 0)
 			attackCooldown -= elapsed;
@@ -61,12 +93,18 @@ class Opponent extends Person
 
 		var dist = Math.abs(this.getMidpoint(FlxPoint.weak()).x - player.getMidpoint(FlxPoint.weak()).x);
 
+		// Escape from player
+		if (escapeTimer > 0)
+		{
+			escapeTimer -= elapsed;
+			move((player.x < x) ? 1 : -1);
+		}
 		if (dist > 90)
 		{
 			// Approach player
 			if (approachCooldown <= 0)
 			{
-				move((player.x < x) ? -1 : 1);
+				move(((player.x < x) ? -1 : 1));
 				approachCooldown = FlxG.random.float(0.2, 0.5);
 			}
 
@@ -82,28 +120,13 @@ class Opponent extends Person
 			// Attack when close enough
 			if (approachCooldown <= 0 && attackCooldown <= 0)
 			{
-				attack();
+				attack(false);
 				attackCooldown = FlxG.random.float(0.5, 1.25);
 			}
 
 			move(0);
 		}
 
-		/*if (life < 50 && dist <= 150 && retreatCooldown <= 0)
-			{
-				move((player.x < x) ? 1 : -1);
-				shield();
-				retreatCooldown = 2;
-			}
-			else if (dist > 100 && approachCooldown <= 0)
-			{
-				move((player.x < x) ? -1 : 1);
-				approachCooldown = 1.5;
-			}
-			else if (dist <= 50 && life > 50 && attackCooldown <= 0)
-			{
-				attack();
-				attackCooldown = 1;
-		}*/
+		facing = ((player.x < x) && (escapeTimer <= 0)) ? LEFT : RIGHT;
 	}
 }

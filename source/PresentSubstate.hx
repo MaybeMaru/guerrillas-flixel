@@ -24,17 +24,6 @@ class PresentSubstate extends FlxSubState
 	{
 		super.create();
 
-		pointData ??= {
-			name: "Madrid",
-			year: 1808,
-			present: {
-				player: "juan",
-				playerDescription: 'Juan Martín Díez\n\n"El Empecinado"\nMilitar español\n1775-1825',
-				enemy: "frances1",
-				enemyDescription: 'Soldado francés #003\n\n"Baguette Baguette Cruasán"',
-			}
-		}
-
 		var bg:FlxSprite;
 		bg = new FlxSprite().makeGraphic(1, 1, FlxColor.BLACK);
 		bg.setGraphicSize(FlxG.width * 4, FlxG.height * 4);
@@ -76,10 +65,10 @@ class PresentSubstate extends FlxSubState
 		FlxTween.tween(line.scale, {x: 1}, 1, {startDelay: 0.2});
 
 		oppImg.y += FlxG.height;
-		FlxTween.tween(oppImg, {y: oppImg.y - FlxG.height}, 1, {ease: FlxEase.backOut});
-
 		playerImg.y += FlxG.height;
+
 		FlxTween.tween(playerImg, {y: playerImg.y - FlxG.height}, 1, {ease: FlxEase.backOut, startDelay: 0.1});
+		FlxTween.tween(oppImg, {y: oppImg.y - FlxG.height}, 1, {ease: FlxEase.backOut});
 
 		oppDesc.x -= FlxG.width;
 		playerDesc.x += FlxG.width;

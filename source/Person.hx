@@ -3,6 +3,7 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.math.FlxMath;
+import flixel.util.FlxTimer;
 
 class Person extends FlxSprite
 {
@@ -46,31 +47,55 @@ class Person extends FlxSprite
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
+
 		inFloor = (y >= 300);
+		inShield = false;
 
 		if (lastInFloor != inFloor)
 		{
 			lastInFloor = inFloor;
 
 			if (inFloor)
-				animation.play("idle");
+				playAnim("idle", true);
 		}
 	}
 
+	var inShield:Bool = false;
+
 	function shield()
 	{
-		animation.play("shield", true);
+		playAnim("shield", true);
+		inShield = true;
 	}
 
 	var attc:Int = 0;
 
-	function attack()
+	function hit()
 	{
+		life -= 10;
+	}
+
+	var animTmr:FlxTimer = new FlxTimer();
+
+	function playAnim(anim:String, ?forced:Bool, ?wait:Float, ?callback:Void->Void)
+	{
+		animation.play(anim, forced ?? false);
+		animTmr.cancel();
+
+		if (wait != null)
+			animTmr.start(wait, (tmr) -> callback());
+	}
+
+	function attack(hit:Bool)
+	{
+		playAnim("punch" + (attc + 1), true, 0.333, () -> playAnim("idle"));
+		FlxG.sound.play("assets/sounds/" + (hit ? "hit" : "swipe") + FlxG.random.int(1, 3) + ".ogg").pitch = FlxG.random.float(0.9, 1.1);
+
+		if (hit)
+			FlxG.camera.shake(0.01, 0.05);
+
 		attc++;
 		attc %= 2;
-
-		animation.play("punch" + (attc + 1), true);
-		FlxG.sound.play("assets/sounds/hit" + FlxG.random.int(1, 3) + ".ogg").pitch = FlxG.random.float(0.9, 1.1);
 	}
 
 	var accelSpeed:Float = 20;
@@ -93,6 +118,6 @@ class Person extends FlxSprite
 		y--;
 		velocity.y = -jumpForce;
 		inFloor = false;
-		animation.play("jump", true);
+		playAnim("jump", true);
 	}
 }

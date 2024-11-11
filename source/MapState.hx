@@ -155,11 +155,20 @@ class MapPoint extends FlxGroup
 
 		this.data = data;
 
-		point = new FlxSprite(X, Y).makeGraphic(25, 25, FlxColor.WHITE);
+		point = new FlxSprite(X, Y);
+		point.loadGraphic("assets/images/point.png", true, 8, 8);
 		point.updateHitbox();
+
+		add(point);
+
+		point.animation.add("unselected", [0]);
+		point.animation.add("selected", [1]);
+
+		point.scale.set(3, 3);
+		point.updateHitbox();
+
 		point.x -= point.width / 2;
 		point.y -= point.height / 2;
-		add(point);
 
 		box = new FlxSprite(X - (75 / 2), Y + point.height + 5).makeGraphic(75, 25);
 		add(box);
@@ -180,13 +189,14 @@ class MapPoint extends FlxGroup
 
 		overlap = FlxG.mouse.overlaps(point);
 		point.color = overlap ? FlxColor.RED : FlxColor.WHITE;
+		point.animation.play(overlap ? "selected" : "unselected");
 		lerp = FlxMath.lerp(lerp, overlap ? 1 : 0, elapsed * 20);
 
 		box.offset.y = 0;
 		txt.alpha = box.alpha = lerp;
 		txt.scale.x = box.scale.x = lerp;
 
-		var scl = Math.max(0.5, lerp);
+		var scl = Math.max(0.5 * 3, lerp * 3);
 		point.scale.set(scl, scl);
 
 		if (overlap != last)
