@@ -44,7 +44,7 @@ class PresentSubstate extends FlxSubState
 
 		var oppDesc = new FlxText(25, FlxG.height / 2, FlxG.width / 3, "");
 		oppDesc.setFormat("assets/fonts/Ancient Medium.ttf", 30);
-		oppDesc.text = present.enemyDescription;
+		oppDesc.text = present.enemyName + "\n\n" + present.enemyDescription;
 		add(oppDesc);
 
 		var playerImg = new FlxSprite(0, 25).loadGraphic('assets/images/portraits/${present.player}.png');
@@ -57,7 +57,7 @@ class PresentSubstate extends FlxSubState
 		var playerDesc = new FlxText(FlxG.width - 25, FlxG.height / 2, FlxG.width / 3, "");
 		playerDesc.setFormat("assets/fonts/Ancient Medium.ttf", 30);
 		playerDesc.alignment = RIGHT;
-		playerDesc.text = present.playerDescription;
+		playerDesc.text = present.playerName + "\n\n" + present.playerDescription;
 		playerDesc.x -= playerDesc.width;
 		add(playerDesc);
 
@@ -67,8 +67,22 @@ class PresentSubstate extends FlxSubState
 		oppImg.y += FlxG.height;
 		playerImg.y += FlxG.height;
 
-		FlxTween.tween(playerImg, {y: playerImg.y - FlxG.height}, 1, {ease: FlxEase.backOut, startDelay: 0.1});
-		FlxTween.tween(oppImg, {y: oppImg.y - FlxG.height}, 1, {ease: FlxEase.backOut});
+		var strt = () -> FlxG.sound.play("assets/sounds/whoosh.ogg").pitch = FlxG.random.float(0.9, 1);
+
+		FlxTween.tween(playerImg, {y: playerImg.y - FlxG.height}, 1, {ease: FlxEase.backOut, startDelay: 0.15, onStart: (twn) -> strt()});
+		FlxTween.tween(oppImg, {y: oppImg.y - FlxG.height}, 1, {ease: FlxEase.backOut, onStart: (twn) -> strt()});
+
+		var vs = new FlxText(0, 0, 0, "VS", 32);
+		vs.setBorderStyle(OUTLINE, FlxColor.BLACK, 3);
+		vs.screenCenter();
+		vs.scale.set();
+		add(vs);
+
+		new FlxTimer().start(0.5, (tmr) ->
+		{
+			FlxTween.tween(vs.scale, {x: 1.5, y: 1.5}, 1, {ease: FlxEase.elasticOut});
+			FlxG.sound.play("assets/sounds/battle.ogg");
+		});
 
 		oppDesc.x -= FlxG.width;
 		playerDesc.x += FlxG.width;
@@ -76,12 +90,13 @@ class PresentSubstate extends FlxSubState
 		FlxTween.tween(oppDesc, {x: oppDesc.x + FlxG.width}, 1, {startDelay: 0.333, ease: FlxEase.backOut});
 		FlxTween.tween(playerDesc, {x: playerDesc.x - FlxG.width}, 1, {startDelay: 0.333, ease: FlxEase.backOut});
 
-		new FlxTimer().start(3, (tmr) ->
+		new FlxTimer().start(3.5, (tmr) ->
 		{
 			FlxTween.tween(line.scale, {x: 0}, 1);
 			FlxTween.tween(oppImg, {y: oppImg.y + FlxG.height}, 1, {ease: FlxEase.backIn});
 			FlxTween.tween(playerImg, {y: playerImg.y + FlxG.height}, 1, {ease: FlxEase.backIn});
 			FlxTween.tween(oppDesc, {x: oppDesc.x - FlxG.width}, 1, {startDelay: 0.333, ease: FlxEase.backIn});
+			FlxTween.tween(vs.scale, {x: 0, y: 0}, 1, {ease: FlxEase.elasticIn});
 			FlxTween.tween(playerDesc, {x: playerDesc.x + FlxG.width}, 1, {
 				startDelay: 0.333,
 				ease: FlxEase.backIn,

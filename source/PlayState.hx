@@ -8,6 +8,7 @@ import flixel.FlxState;
 import flixel.group.FlxGroup;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
+import flixel.text.FlxText;
 import flixel.ui.FlxBar;
 import flixel.util.FlxColor;
 
@@ -37,24 +38,37 @@ class PlayState extends FlxState
 			year: 1808,
 			present: {
 				player: "juan",
-				playerDescription: 'Juan Martín Díez\n\n"El Empecinado"\nMilitar español\n1775-1825',
+				playerName: "Juan Martín Díez",
+				playerDescription: '"El Empecinado"\nMilitar español\n1775-1825',
 				enemy: "frances1",
-				enemyDescription: 'Soldado francés #003\n\n"Baguette Baguette Cruasán"',
+				enemyName: "Soldado francés #003",
+				enemyDescription: '"Baguette Baguette Cruasán"',
 			}
 		}
 
-		var sky = new FlxSprite().loadGraphic("assets/images/spainMap.png");
-		sky.setGraphicSize(FlxG.width, FlxG.height);
-		sky.updateHitbox();
-		sky.scrollFactor.set(0.4, 0.4);
-		sky.color = 0xff5e5e5e;
-		add(sky);
+		/*var sky = new FlxSprite().loadGraphic("assets/images/spainMap.png");
+			sky.setGraphicSize(FlxG.width, FlxG.height);
+			sky.updateHitbox();
+			sky.scrollFactor.set(0.4, 0.4);
+			sky.color = 0xff5e5e5e;
+			add(sky); */
 
 		FlxG.camera.bgColor = FlxColor.GRAY;
 		FlxG.mouse.visible = false;
 
+		var overlay:FlxGroup = new FlxGroup();
+
+		scene = new Scene(switch (pointData.year)
+		{
+			case 1809: 1;
+			case 1810: 2;
+			default: 0;
+		}, overlay);
+		add(scene);
+
 		objects = new FlxGroup();
 		add(objects);
+		add(overlay);
 
 		player = new Player();
 		opponent = new Opponent(player);
@@ -62,9 +76,6 @@ class PlayState extends FlxState
 
 		objects.add(opponent);
 		objects.add(player);
-
-		scene = new Scene();
-		add(scene);
 
 		persistentDraw = false;
 		var cam = FlxG.cameras.add(new FlxCamera(), false);
@@ -85,6 +96,11 @@ class PlayState extends FlxState
 		add(oppBack);
 		add(opponentBar);
 
+		var nameOpp = new FlxText(opponentBar.x, opponentBar.y, pointData.present.enemyName, 16);
+		nameOpp.setBorderStyle(SHADOW, FlxColor.BLACK, 2, 0);
+		nameOpp.camera = cam;
+		add(nameOpp);
+
 		playerBar = new FlxBar(FlxG.width - barWidth - 23, 25, RIGHT_TO_LEFT, barWidth, 25, player, "life");
 		playerBar.createFilledBar(FlxColor.RED, FlxColor.LIME);
 		playerBar.camera = cam;
@@ -94,6 +110,12 @@ class PlayState extends FlxState
 		playerBack.camera = cam;
 		add(playerBack);
 		add(playerBar);
+
+		var namePlayer = new FlxText(playerBar.x, playerBar.y, pointData.present.playerName, 16);
+		namePlayer.setBorderStyle(SHADOW, FlxColor.BLACK, 2, 0);
+		namePlayer.camera = cam;
+		namePlayer.x += playerBar.width - namePlayer.width;
+		add(namePlayer);
 	}
 
 	var playerBar:FlxBar;
@@ -112,7 +134,7 @@ class PlayState extends FlxState
 		super.update(elapsed);
 
 		zoomCamera();
-		FlxG.collide(objects, scene);
+		FlxG.collide(objects, scene.collision);
 
 		if (FlxG.keys.justPressed.R)
 			FlxG.resetGame();

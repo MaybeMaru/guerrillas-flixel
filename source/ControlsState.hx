@@ -6,7 +6,7 @@ import flixel.addons.display.FlxBackdrop;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 
-class CreditsState extends FlxState
+class ControlsState extends FlxState
 {
 	override function create()
 	{
@@ -24,10 +24,12 @@ class CreditsState extends FlxState
 		war.color = FlxColor.GRAY;
 
 		var txt = new FlxText(25, 25, FlxG.width - 50);
-		txt.setFormat("assets/fonts/Ancient Medium.ttf", 32);
-		txt.text = 'Creado por
-		Inspirado en la Guerra de la Independencia Española
-		';
+		txt.text = "CONTROLES:\nMovimiento: Flechas\nAtaque: Z\nEscudo: X";
+
+		txt.setFormat("assets/fonts/Ancient Medium.ttf", 32, FlxColor.WHITE, null, SHADOW, FlxColor.BLACK);
+		txt.borderSize = 3;
+		txt.borderQuality = 0;
+
 		add(txt);
 
 		FlxG.camera.fade(FlxColor.BLACK, 0.3, true);

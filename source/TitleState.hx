@@ -12,7 +12,7 @@ import openfl.system.System;
 class TitleState extends FlxState
 {
 	var items:Array<FlxText> = [];
-	var list = ["Jugar", "Creditos", "Salir"];
+	var list = ["Jugar", "Controles", "Salir"];
 
 	public static var wentBack:Bool = true;
 
@@ -115,7 +115,7 @@ class TitleState extends FlxState
 					case 0:
 						FlxG.switchState(new MapState());
 					case 1:
-						FlxG.switchState(new CreditsState());
+						FlxG.switchState(new ControlsState());
 					case 2:
 						System.exit(0);
 				}

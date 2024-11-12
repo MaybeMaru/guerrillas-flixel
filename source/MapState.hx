@@ -35,9 +35,11 @@ class MapState extends FlxState
 			year: 1808,
 			present: {
 				player: "juan",
-				playerDescription: 'Juan Martín Díez\n\n"El Empecinado"\nMilitar español\n1775-1825',
+				playerName: "Juan Martín Díez",
+				playerDescription: '"El Empecinado"\nMilitar español\n1775-1825',
 				enemy: "frances1",
-				enemyDescription: 'Soldado francés #003\n\n"Baguette Baguette Cruasán"',
+				enemyName: "Soldado francés #003",
+				enemyDescription: '"Baguette Baguette Cruasán"',
 			}
 		}));
 
@@ -46,9 +48,11 @@ class MapState extends FlxState
 			year: 1809,
 			present: {
 				player: "jeronimo",
-				playerDescription: 'Jerónimo Merino\n\n"El Cura Merino"\nSacerdote\n1769-1844',
+				playerName: "Jerónimo Merino",
+				playerDescription: '"El Cura Merino"\nSacerdote\n1769-1844',
 				enemy: "frances2",
-				enemyDescription: 'Soldado francés #069\n\n"Donemuah Torre Eiffel"',
+				enemyName: "Soldado francés #069",
+				enemyDescription: '"Donemuah Torre Eiffel"',
 			}
 		}));
 
@@ -57,9 +61,11 @@ class MapState extends FlxState
 			year: 1810,
 			present: {
 				player: "espoz",
-				playerDescription: 'Francisco Espoz Illundáin\n\n"Espoz y Mina"\nMilitar español\n1781-1836',
+				playerName: "Francisco Espoz Illundáin",
+				playerDescription: '"Espoz y Mina"\nMilitar español\n1781-1836',
 				enemy: "frances3",
-				enemyDescription: 'Soldado francés #007\n\n"Mon plus grand cauchemar, une brosse à dents."',
+				enemyName: "Soldado francés #007",
+				enemyDescription: '"Mon plus grand cauchemar, une brosse à dents."',
 			}
 		}));
 
@@ -137,6 +143,8 @@ typedef PresentData =
 {
 	player:String,
 	enemy:String,
+	playerName:String,
+	enemyName:String,
 	playerDescription:String,
 	enemyDescription:String
 }

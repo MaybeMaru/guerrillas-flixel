@@ -40,6 +40,8 @@ class Person extends FlxSprite
 
 		setFacingFlip(LEFT, false, false);
 		setFacingFlip(RIGHT, true, false);
+
+		attackTmr.start(0.1);
 	}
 
 	var lastInFloor:Bool = false;
@@ -86,8 +88,11 @@ class Person extends FlxSprite
 			animTmr.start(wait, (tmr) -> callback());
 	}
 
+	var attackTmr:FlxTimer = new FlxTimer();
+
 	function attack(hit:Bool)
 	{
+		attackTmr.start(0.333);
 		playAnim("punch" + (attc + 1), true, 0.333, () -> playAnim("idle"));
 		FlxG.sound.play("assets/sounds/" + (hit ? "hit" : "swipe") + FlxG.random.int(1, 3) + ".ogg").pitch = FlxG.random.float(0.9, 1.1);
 

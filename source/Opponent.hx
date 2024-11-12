@@ -39,15 +39,22 @@ class Opponent extends Person
 
 		var distX = Math.abs(playerMidpoint.x - oppMidpoint.x);
 		var distY = Math.abs(playerMidpoint.y - oppMidpoint.y);
+		var inDistance:Bool = (distX <= 90 && distY <= 20);
 
-		if (!player.inShield && distX <= 90 && distY <= 20)
+		if (!inDistance || player.inShield)
 		{
-			player.hit();
-			super.attack(true);
+			super.attack(false);
+
+			if (inDistance && player.inShield)
+			{
+				FlxG.camera.shake(0.005, 0.03);
+				FlxG.sound.play("assets/sounds/shield.ogg").pitch = FlxG.random.float(0.9, 1.1);
+			}
 		}
 		else
 		{
-			super.attack(false);
+			player.hit();
+			super.attack(true);
 		}
 	}
 
