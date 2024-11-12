@@ -8,10 +8,14 @@ import flixel.effects.particles.FlxEmitter;
 import flixel.group.FlxGroup;
 import flixel.util.FlxColor;
 import flixel.util.FlxGradient;
+import openfl.geom.ColorTransform;
+
+using flixel.util.FlxColorTransformUtil;
 
 class Scene extends FlxGroup
 {
 	public var collision:FlxTypedGroup<FlxObject>;
+
 	public var overlay:FlxGroup;
 
 	var floorY:Float = 0;
@@ -93,7 +97,8 @@ class Scene extends FlxGroup
 				add(trees);
 
 				var snow = new FlxBackdrop("assets/images/stage/snow.png", X);
-				snow.y = floorY;
+				snow.x = -200;
+				snow.y = floorY - 5;
 				snow.scale.set(3, 3);
 				snow.updateHitbox();
 				add(snow);
@@ -106,14 +111,31 @@ class Scene extends FlxGroup
 				emmiter.start(false);
 				emmiter.acceleration.set(0, 40);
 				overlay.add(emmiter);
-
-				// pregen some particles
 				emmiter.update(10);
 
 				emmiter.memberAdded.add((snow) ->
 				{
 					snow.scrollFactor.set(FlxG.random.float(1.55, 1.6), FlxG.random.float(1.55, 1.6));
 				});
+
+				var frozen = new FlxSprite(0, 0, "assets/images/stage/frozen.png");
+				frozen.setGraphicSize(FlxG.width, FlxG.height);
+				frozen.updateHitbox();
+				frozen.scale.scale(1.25, 1.25);
+				frozen.blend = ADD;
+				frozen.scrollFactor.set();
+				frozen.camera = FlxG.cameras.list[FlxG.cameras.list.length - 1];
+				frozen.alpha = 0.75;
+				overlay.add(frozen);
+
+				var instance:PlayState = cast FlxG.state;
+				instance.player.colorTransform.concat(transform(0xffadd2eb));
+				instance.opponent.colorTransform.concat(transform(0xffadd2eb));
 		}
+	}
+
+	function transform(color:FlxColor)
+	{
+		return new ColorTransform(color.redFloat, color.greenFloat, color.blueFloat);
 	}
 }

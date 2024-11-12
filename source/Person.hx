@@ -62,9 +62,15 @@ class Person extends FlxSprite
 		}
 	}
 
+	function animCheck()
+	{
+		if (!inShield && animation.curAnim != null && animation.curAnim.name == "shield")
+			playAnim("idle", true);
+	}
+
 	var inShield:Bool = false;
 
-	function shield()
+	function shield():Void
 	{
 		playAnim("shield", true);
 		inShield = true;
@@ -72,9 +78,11 @@ class Person extends FlxSprite
 
 	var attc:Int = 0;
 
-	function hit()
+	var weakness:Float = 3.333;
+
+	function hit():Void
 	{
-		life -= 10;
+		life -= weakness;
 	}
 
 	var animTmr:FlxTimer = new FlxTimer();

@@ -15,8 +15,8 @@ import flixel.util.FlxColor;
 // lime test hl
 class PlayState extends FlxState
 {
-	var player:Player;
-	var opponent:Opponent;
+	public var player:Player;
+	public var opponent:Opponent;
 
 	var objects:FlxGroup;
 	var scene:Scene;
@@ -46,17 +46,17 @@ class PlayState extends FlxState
 			}
 		}
 
-		/*var sky = new FlxSprite().loadGraphic("assets/images/spainMap.png");
-			sky.setGraphicSize(FlxG.width, FlxG.height);
-			sky.updateHitbox();
-			sky.scrollFactor.set(0.4, 0.4);
-			sky.color = 0xff5e5e5e;
-			add(sky); */
+		var cam = FlxG.cameras.add(new FlxCamera(), false);
+		cam.bgColor = FlxColor.TRANSPARENT;
 
 		FlxG.camera.bgColor = FlxColor.GRAY;
 		FlxG.mouse.visible = false;
 
 		var overlay:FlxGroup = new FlxGroup();
+
+		player = new Player();
+		opponent = new Opponent(player);
+		player.opponent = opponent;
 
 		scene = new Scene(switch (pointData.year)
 		{
@@ -70,16 +70,11 @@ class PlayState extends FlxState
 		add(objects);
 		add(overlay);
 
-		player = new Player();
-		opponent = new Opponent(player);
-		player.opponent = opponent;
-
 		objects.add(opponent);
 		objects.add(player);
 
 		persistentDraw = false;
-		var cam = FlxG.cameras.add(new FlxCamera(), false);
-		cam.bgColor = FlxColor.TRANSPARENT;
+
 		var sub = new PresentSubstate(pointData);
 		sub.camera = cam;
 		openSubState(sub);

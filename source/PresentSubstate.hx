@@ -73,6 +73,7 @@ class PresentSubstate extends FlxSubState
 		FlxTween.tween(oppImg, {y: oppImg.y - FlxG.height}, 1, {ease: FlxEase.backOut, onStart: (twn) -> strt()});
 
 		var vs = new FlxText(0, 0, 0, "VS", 32);
+		vs.color = FlxColor.YELLOW;
 		vs.setBorderStyle(OUTLINE, FlxColor.BLACK, 3);
 		vs.screenCenter();
 		vs.scale.set();

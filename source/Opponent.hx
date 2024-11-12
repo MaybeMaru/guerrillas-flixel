@@ -25,6 +25,7 @@ class Opponent extends Person
 	{
 		super.update(elapsed);
 		logic(elapsed);
+		animCheck();
 	}
 
 	var approachCooldown:Float = 0;

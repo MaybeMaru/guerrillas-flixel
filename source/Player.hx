@@ -60,5 +60,7 @@ class Player extends Person
 
 		if (inFloor && FlxG.keys.justPressed.UP)
 			jump();
+
+		animCheck();
 	}
 }
