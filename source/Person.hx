@@ -15,19 +15,22 @@ class Person extends FlxSprite
 	var inFloor:Bool = false;
 	var life:Float = 100;
 
-	public function new()
+	public function new(levelID:Int, isPlayer:Bool)
 	{
 		super();
 
 		// loadGraphic("assets/images/characters/test.png", true, 15, 30);
-		loadGraphic("assets/images/characters/soldier.png", true, 50, 50);
+		loadGraphic('assets/images/characters/${(switch (levelID) {
+			case 1: "merino";
+			case 2: "espoz";
+			default: "soldier";
+		})}.png', true, 50, 50);
 
 		animation.add("idle", [0, 1], 6);
 		animation.add("jump", [2, 3], 6);
 		animation.add("punch", [4, 5], 6);
 		animation.add("walk", [6, 7, 8, 7], 6);
-		// animation.add("punch2", [3]);
-		// animation.add("shield", [4]);
+		animation.add("shield", [9, 10, 10, 10, 10, 10, 10], 6, false);
 
 		playAnim("idle", true);
 		updateHitbox();
@@ -67,7 +70,6 @@ class Person extends FlxSprite
 			y = 300;
 
 		inFloor = (y >= 300);
-		inShield = false;
 		moving = false;
 
 		if (lastInFloor != inFloor)
@@ -78,13 +80,15 @@ class Person extends FlxSprite
 		}
 	}
 
-	function hitFloor() {}
-
 	var inShield:Bool = false;
 
 	function shield():Void
 	{
-		playAnim("shield", true);
+		if (animation.curAnim.name != "shield")
+		{
+			FlxG.sound.play("assets/sounds/shield_equip.ogg").pitch = FlxG.random.float(0.9, 1);
+			playAnim("shield");
+		}
 		inShield = true;
 	}
 
@@ -111,7 +115,7 @@ class Person extends FlxSprite
 	function attack(hit:Bool)
 	{
 		attackTmr.start(0.333);
-		playAnim("punch", true, 0.333, () -> playAnim("idle"));
+		playAnim("punch", true, 0.333, () -> playAnim(inFloor ? "idle" : "jump"));
 		FlxG.sound.play("assets/sounds/" + (hit ? "hit" : "swipe") + FlxG.random.int(1, 3) + ".ogg").pitch = FlxG.random.float(0.9, 1.1);
 
 		if (hit)
@@ -119,16 +123,19 @@ class Person extends FlxSprite
 	}
 
 	var accelSpeed:Float = 20;
+	var speedMult:Float = 1;
 	var slipResistance:Float = 20;
 
 	function move(dir:Int)
 	{
 		var canAnim = !inShield && inFloor && attackTmr.finished;
+		speedMult = inShield ? 0.4 : 1;
 
 		switch (dir)
 		{
 			case 1 | -1:
-				velocity.x += moveSpeed * FlxG.elapsed * accelSpeed * dir;
+				velocity.x += moveSpeed * FlxG.elapsed * accelSpeed * dir * speedMult;
+				velocity.x = FlxMath.bound(velocity.x, -maxVelocity.x * speedMult, maxVelocity.x * speedMult);
 				facing = (dir == 1) ? RIGHT : LEFT;
 				if (canAnim)
 					playAnim("walk");
@@ -144,6 +151,13 @@ class Person extends FlxSprite
 		y--;
 		velocity.y = -jumpForce;
 		inFloor = false;
-		playAnim("jump", true);
+		if (!inShield)
+			playAnim("jump", true);
+		FlxG.sound.play("assets/sounds/jump.ogg").pitch = FlxG.random.float(0.9, 1.1);
+	}
+
+	function hitFloor()
+	{
+		FlxG.sound.play("assets/sounds/land.ogg").pitch = FlxG.random.float(0.9, 1.1);
 	}
 }

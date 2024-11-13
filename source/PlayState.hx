@@ -55,16 +55,18 @@ class PlayState extends FlxState
 
 		var overlay:FlxGroup = new FlxGroup();
 
-		player = new Player();
-		opponent = new Opponent(player);
-		player.opponent = opponent;
-
-		scene = new Scene(switch (pointData.year)
+		var levelID:Int = switch (pointData.year)
 		{
 			case 1809: 1;
 			case 1810: 2;
 			default: 0;
-		}, overlay);
+		}
+
+		player = new Player(levelID);
+		opponent = new Opponent(levelID, player);
+		player.opponent = opponent;
+
+		scene = new Scene(levelID, overlay);
 		add(scene);
 
 		objects = new FlxGroup();
@@ -78,7 +80,7 @@ class PlayState extends FlxState
 
 		var sub = new PresentSubstate(pointData);
 		sub.camera = cam;
-		// openSubState(sub);
+		openSubState(sub);
 
 		var barWidth:Int = Std.int(FlxG.width / 2) - 50;
 
@@ -118,6 +120,7 @@ class PlayState extends FlxState
 		back.updateHitbox();
 		back.screenCenter(X);
 		back.camera = cam;
+		back.alpha = 0.8;
 		add(back);
 
 		timer = new FlxText(0, 0, 0, "0:00", 16);
@@ -127,6 +130,8 @@ class PlayState extends FlxState
 		timer.camera = cam;
 		add(timer);
 	}
+
+	public function startFight() {}
 
 	var timer:FlxText;
 

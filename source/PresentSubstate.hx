@@ -114,6 +114,7 @@ class PresentSubstate extends FlxSubState
 							instance.opponent.agro = false;
 							new FlxTimer().start(0.1, (tmr) -> instance.opponent.agro = true);
 
+							instance.startFight();
 							close();
 						}
 					});

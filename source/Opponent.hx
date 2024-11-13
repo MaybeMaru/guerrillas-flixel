@@ -10,9 +10,9 @@ class Opponent extends Person
 {
 	var player:Player;
 
-	public function new(player:Player)
+	public function new(levelID:Int, player:Player)
 	{
-		super();
+		super(levelID, false);
 		color = FlxColor.RED;
 		this.player = player;
 		slipResistance = 7.5;
@@ -73,6 +73,8 @@ class Opponent extends Person
 
 	function logic(elapsed:Float)
 	{
+		inShield = false;
+
 		if (approachCooldown > 0)
 			approachCooldown -= elapsed;
 

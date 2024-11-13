@@ -9,9 +9,9 @@ class Player extends Person
 {
 	public var opponent:Opponent;
 
-	public function new()
+	public function new(levelID:Int)
 	{
-		super();
+		super(levelID, true);
 		x += 200;
 		facing = LEFT;
 	}
@@ -53,8 +53,10 @@ class Player extends Person
 		else
 			move(0);
 
-		if (FlxG.keys.pressed.X)
+		if (FlxG.keys.justPressed.X)
 			shield();
+		else if (FlxG.keys.released.X)
+			inShield = false;
 
 		if (FlxG.keys.justPressed.Z && attackTmr.finished && !inShield)
 			attack(false);
