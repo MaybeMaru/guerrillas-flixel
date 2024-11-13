@@ -67,6 +67,9 @@ class PresentSubstate extends FlxSubState
 		oppImg.y += FlxG.height;
 		playerImg.y += FlxG.height;
 
+		FlxG.sound.cache("assets/sounds/whoosh.ogg");
+		FlxG.sound.cache("assets/sounds/battle.ogg");
+
 		var strt = () -> FlxG.sound.play("assets/sounds/whoosh.ogg").pitch = FlxG.random.float(0.9, 1);
 
 		FlxTween.tween(playerImg, {y: playerImg.y - FlxG.height}, 1, {ease: FlxEase.backOut, startDelay: 0.15, onStart: (twn) -> strt()});

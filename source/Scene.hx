@@ -58,6 +58,44 @@ class Scene extends FlxGroup
 
 			case 1: // Iglesia
 
+				var back = new FlxSprite(0, 0, "assets/images/stage/church.png");
+				back.scale.set(3, 3);
+				back.updateHitbox();
+				back.scrollFactor.set(0.15, 0.35);
+				back.screenCenter();
+				add(back);
+
+				back.y -= 50;
+				back.color = 0xffa59494;
+
+				var floor = new FlxBackdrop("assets/images/stage/floor.png", X);
+				floor.y = floorY - 5;
+				floor.scale.set(3, 3);
+				floor.updateHitbox();
+				floor.screenCenter(X);
+
+				for (i in 0...8)
+				{
+					var mini = new FlxSprite((i * FlxG.width * 0.6) - FlxG.width * 1.1, -275, "assets/images/stage/columnajonica.png");
+					mini.color = 0xffa59494;
+					mini.scale.set(1.5, 1.5);
+					mini.updateHitbox();
+					mini.scrollFactor.set(0.8, 0.8);
+					add(mini);
+				}
+
+				add(floor);
+
+				for (i in 0...4)
+				{
+					var column = new FlxSprite((i * (FlxG.width * 1.2)) - FlxG.width * 1.4, -250, "assets/images/stage/columnajonica.png");
+					column.color = 0xffd1c6c6;
+					column.scale.set(2.25, 2.25);
+					column.updateHitbox();
+					column.scrollFactor.set(1.5, 1.5);
+					overlay.add(column);
+				}
+
 			case 2: // Pirineos
 
 				var sky = FlxGradient.createGradientFlxSprite(FlxG.width, FlxG.height, [0xff051431, 0xff09021a], 1);
@@ -111,7 +149,9 @@ class Scene extends FlxGroup
 				emmiter.start(false);
 				emmiter.acceleration.set(0, 40);
 				overlay.add(emmiter);
-				emmiter.update(10);
+
+				for (i in 0...25)
+					emmiter.emitParticle();
 
 				emmiter.memberAdded.add((snow) ->
 				{
@@ -128,10 +168,15 @@ class Scene extends FlxGroup
 				frozen.alpha = 0.75;
 				overlay.add(frozen);
 
-				var instance:PlayState = cast FlxG.state;
-				instance.player.colorTransform.concat(transform(0xffadd2eb));
-				instance.opponent.colorTransform.concat(transform(0xffadd2eb));
+				tint(0xffadd2eb);
 		}
+	}
+
+	function tint(color:FlxColor)
+	{
+		var instance:PlayState = cast FlxG.state;
+		instance.player.colorTransform.concat(transform(color));
+		instance.opponent.colorTransform.concat(transform(color));
 	}
 
 	function transform(color:FlxColor)

@@ -52,11 +52,11 @@ class Player extends Person
 		else
 			move(0);
 
-		if (FlxG.keys.justPressed.Z && attackTmr.finished)
-			attack(false);
-
 		if (FlxG.keys.pressed.X)
 			shield();
+
+		if (FlxG.keys.justPressed.Z && attackTmr.finished && !inShield)
+			attack(false);
 
 		if (inFloor && FlxG.keys.justPressed.UP)
 			jump();
