@@ -93,6 +93,7 @@ class PresentSubstate extends FlxSubState
 
 		FlxTween.tween(oppDesc, {x: oppDesc.x + FlxG.width}, 1, {startDelay: 0.333, ease: FlxEase.backOut});
 		FlxTween.tween(playerDesc, {x: playerDesc.x - FlxG.width}, 1, {startDelay: 0.333, ease: FlxEase.backOut});
+		var instance:PlayState = cast FlxG.state;
 
 		new FlxTimer().start(3.5, (tmr) ->
 		{
@@ -110,6 +111,9 @@ class PresentSubstate extends FlxSubState
 					FlxTween.tween(bg, {alpha: 0}, 0.333, {
 						onComplete: (twn) ->
 						{
+							instance.opponent.agro = false;
+							new FlxTimer().start(0.1, (tmr) -> instance.opponent.agro = true);
+
 							close();
 						}
 					});

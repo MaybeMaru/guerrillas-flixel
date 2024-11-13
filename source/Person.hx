@@ -1,8 +1,10 @@
 package;
 
+import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.math.FlxMath;
+import flixel.math.FlxPoint;
 import flixel.util.FlxTimer;
 
 class Person extends FlxSprite
@@ -17,18 +19,20 @@ class Person extends FlxSprite
 	{
 		super();
 
-		loadGraphic("assets/images/characters/test.png", true, 15, 30);
+		// loadGraphic("assets/images/characters/test.png", true, 15, 30);
+		loadGraphic("assets/images/characters/soldier.png", true, 50, 50);
 
-		animation.add("idle", [0]);
-		animation.add("jump", [1]);
-		animation.add("punch1", [2]);
-		animation.add("punch2", [3]);
-		animation.add("shield", [4]);
+		animation.add("idle", [0, 1], 6);
+		animation.add("jump", [2, 3], 6);
+		animation.add("punch", [4, 5], 6);
+		animation.add("walk", [6, 7, 8, 7], 6);
+		// animation.add("punch2", [3]);
+		// animation.add("shield", [4]);
 
-		animation.play("idle");
+		playAnim("idle", true);
 		updateHitbox();
 
-		setGraphicSize(60, 120);
+		setGraphicSize(120, 120);
 		updateHitbox();
 
 		y = 301;
@@ -38,35 +42,43 @@ class Person extends FlxSprite
 		maxVelocity.y = jumpForce;
 		maxVelocity.x = moveSpeed;
 
-		setFacingFlip(LEFT, false, false);
-		setFacingFlip(RIGHT, true, false);
+		setFacingFlip(LEFT, true, false);
+		setFacingFlip(RIGHT, false, false);
 
 		attackTmr.start(0.1);
 	}
 
+	override function getScreenPosition(?result:FlxPoint, ?camera:FlxCamera):FlxPoint
+	{
+		var pnt = super.getScreenPosition(result, camera);
+		if (flipX)
+			pnt.x -= width / 2;
+		return pnt;
+	}
+
 	var lastInFloor:Bool = false;
+	var moving:Bool = false;
 
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
 
+		if (y >= 300)
+			y = 300;
+
 		inFloor = (y >= 300);
 		inShield = false;
+		moving = false;
 
 		if (lastInFloor != inFloor)
 		{
 			lastInFloor = inFloor;
-
 			if (inFloor)
-				playAnim("idle", true);
+				hitFloor();
 		}
 	}
 
-	function animCheck()
-	{
-		if (!inShield && animation.curAnim != null && animation.curAnim.name == "shield")
-			playAnim("idle", true);
-	}
+	function hitFloor() {}
 
 	var inShield:Bool = false;
 
@@ -75,8 +87,6 @@ class Person extends FlxSprite
 		playAnim("shield", true);
 		inShield = true;
 	}
-
-	var attc:Int = 0;
 
 	var weakness:Float = 3.333;
 
@@ -101,14 +111,11 @@ class Person extends FlxSprite
 	function attack(hit:Bool)
 	{
 		attackTmr.start(0.333);
-		playAnim("punch" + (attc + 1), true, 0.333, () -> playAnim("idle"));
+		playAnim("punch", true, 0.333, () -> playAnim("idle"));
 		FlxG.sound.play("assets/sounds/" + (hit ? "hit" : "swipe") + FlxG.random.int(1, 3) + ".ogg").pitch = FlxG.random.float(0.9, 1.1);
 
 		if (hit)
 			FlxG.camera.shake(0.01, 0.05);
-
-		attc++;
-		attc %= 2;
 	}
 
 	var accelSpeed:Float = 20;
@@ -116,13 +123,19 @@ class Person extends FlxSprite
 
 	function move(dir:Int)
 	{
+		var canAnim = !inShield && inFloor && attackTmr.finished;
+
 		switch (dir)
 		{
 			case 1 | -1:
 				velocity.x += moveSpeed * FlxG.elapsed * accelSpeed * dir;
 				facing = (dir == 1) ? RIGHT : LEFT;
+				if (canAnim)
+					playAnim("walk");
 			case 0:
 				velocity.x = FlxMath.lerp(velocity.x, 0, FlxG.elapsed * slipResistance);
+				if (canAnim)
+					playAnim("idle");
 		}
 	}
 

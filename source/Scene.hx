@@ -30,10 +30,6 @@ class Scene extends FlxGroup
 		add(collision);
 
 		floorY = FlxG.height - 60;
-		var floor = new FlxSprite(0, floorY).makeGraphic((FlxG.width * 4), 60, FlxColor.BLUE);
-		floor.screenCenter(X);
-		floor.updateHitbox();
-		collision.add(floor);
 
 		var wall1 = new FlxSprite(-600, -800).makeGraphic(5, FlxG.height * 4, FlxColor.LIME);
 		collision.add(wall1);
@@ -41,7 +37,7 @@ class Scene extends FlxGroup
 		var wall2 = new FlxSprite(FlxG.width + 600, -800, wall1.graphic);
 		collision.add(wall2);
 
-		wall1.visible = wall2.visible = floor.visible = false;
+		wall1.visible = wall2.visible = false;
 
 		FlxG.worldBounds.set(-4000, -4000, 8000, 8000);
 		for (i in collision.members)
@@ -74,6 +70,16 @@ class Scene extends FlxGroup
 				floor.updateHitbox();
 				floor.screenCenter(X);
 
+				var ceiling = new FlxBackdrop("assets/images/stage/floor.png", X);
+				ceiling.y = -300;
+				ceiling.flipY = true;
+				ceiling.scale.set(3, 3);
+				ceiling.updateHitbox();
+				ceiling.screenCenter(X);
+				ceiling.color = 0xffa59494;
+				ceiling.scrollFactor.set(0.78, 0.78);
+				add(ceiling);
+
 				for (i in 0...8)
 				{
 					var mini = new FlxSprite((i * FlxG.width * 0.6) - FlxG.width * 1.1, -275, "assets/images/stage/columnajonica.png");
@@ -85,6 +91,13 @@ class Scene extends FlxGroup
 				}
 
 				add(floor);
+
+				var light = new FlxSprite(-600, 0, "assets/images/stage/light.png");
+				light.scale.set(6, 6);
+				light.updateHitbox();
+				light.y = floorY - light.height;
+				light.blend = ADD;
+				overlay.add(light);
 
 				for (i in 0...4)
 				{

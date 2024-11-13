@@ -16,16 +16,20 @@ class Opponent extends Person
 		color = FlxColor.RED;
 		this.player = player;
 		slipResistance = 7.5;
+
 		x -= 200;
+		facing = RIGHT;
 
 		retreatCooldown = FlxG.random.float(3, 6);
 	}
 
+	public var agro:Bool = true;
+
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
-		logic(elapsed);
-		animCheck();
+		if (agro)
+			logic(elapsed);
 	}
 
 	var approachCooldown:Float = 0;

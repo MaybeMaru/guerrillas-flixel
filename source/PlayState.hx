@@ -11,6 +11,7 @@ import flixel.math.FlxPoint;
 import flixel.text.FlxText;
 import flixel.ui.FlxBar;
 import flixel.util.FlxColor;
+import flixel.util.FlxStringUtil;
 
 // lime test hl
 class PlayState extends FlxState
@@ -77,7 +78,7 @@ class PlayState extends FlxState
 
 		var sub = new PresentSubstate(pointData);
 		sub.camera = cam;
-		openSubState(sub);
+		// openSubState(sub);
 
 		var barWidth:Int = Std.int(FlxG.width / 2) - 50;
 
@@ -111,7 +112,23 @@ class PlayState extends FlxState
 		namePlayer.camera = cam;
 		namePlayer.x += playerBar.width - namePlayer.width;
 		add(namePlayer);
+
+		var back = new FlxSprite(0, 60).makeGraphic(1, 1, FlxColor.BLACK);
+		back.scale.set(60, 30);
+		back.updateHitbox();
+		back.screenCenter(X);
+		back.camera = cam;
+		add(back);
+
+		timer = new FlxText(0, 0, 0, "0:00", 16);
+		timer.updateHitbox();
+		timer.y = (back.y) + (back.height - timer.height) / 2;
+		timer.screenCenter(X);
+		timer.camera = cam;
+		add(timer);
 	}
+
+	var timer:FlxText;
 
 	var playerBar:FlxBar;
 	var opponentBar:FlxBar;
@@ -124,12 +141,17 @@ class PlayState extends FlxState
 		super.destroy();
 	}
 
+	var elp:Float = 0;
+
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
 
 		zoomCamera();
 		FlxG.collide(objects, scene.collision);
+
+		elp += elapsed;
+		timer.text = FlxStringUtil.formatTime(elp);
 
 		if (FlxG.keys.justPressed.R)
 			FlxG.resetGame();
@@ -144,7 +166,7 @@ class PlayState extends FlxState
 		var maxZoom = 0.9;
 
 		var zoom = FlxMath.bound(FlxMath.remapToRange(dist, 0, minDist, maxZoom, minZoom), minZoom, maxZoom);
-		FlxG.camera.zoom = zoom;
+		FlxG.camera.zoom = Math.max(0.55, zoom);
 
 		var playerOff = (player.x - (FlxG.width - player.width) / 2) / 4;
 		var isNeg = playerOff <= 0;
