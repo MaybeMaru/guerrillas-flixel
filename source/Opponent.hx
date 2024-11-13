@@ -13,7 +13,6 @@ class Opponent extends Person
 	public function new(levelID:Int, player:Player)
 	{
 		super(levelID, false);
-		color = FlxColor.RED;
 		this.player = player;
 		slipResistance = 7.5;
 

@@ -19,12 +19,11 @@ class Person extends FlxSprite
 	{
 		super();
 
-		// loadGraphic("assets/images/characters/test.png", true, 15, 30);
-		loadGraphic('assets/images/characters/${(switch (levelID) {
+		loadGraphic('assets/images/characters/${(isPlayer ? (switch (levelID) {
 			case 1: "merino";
 			case 2: "espoz";
 			default: "soldier";
-		})}.png', true, 50, 50);
+		}) : "frenchie")}.png', true, 50, 50);
 
 		animation.add("idle", [0, 1], 6);
 		animation.add("jump", [2, 3], 6);

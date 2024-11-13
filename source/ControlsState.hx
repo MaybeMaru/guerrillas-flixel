@@ -24,7 +24,7 @@ class ControlsState extends FlxState
 		war.color = FlxColor.GRAY;
 
 		var txt = new FlxText(25, 25, FlxG.width - 50);
-		txt.text = "CONTROLES:\n\nMovimiento: Flechas Direccionales\nAtaque: Z\nEscudo: X";
+		txt.text = "CONTROLES:\n\nMovimiento: Flechas Direccionales\nSalto: Flecha de Arriba\nAtaque: Z\nEscudo: X";
 
 		txt.setFormat("assets/fonts/Ancient Medium.ttf", 32, FlxColor.WHITE, null, SHADOW, FlxColor.BLACK);
 		txt.borderSize = 3;
