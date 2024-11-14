@@ -13,7 +13,12 @@ class Person extends FlxSprite
 	var moveSpeed = 300;
 
 	var inFloor:Bool = false;
-	var life:Float = 100;
+	var life(default, set):Float = 100;
+
+	function set_life(v)
+	{
+		return life = v;
+	}
 
 	public function new(levelID:Int, isPlayer:Bool)
 	{
@@ -115,7 +120,7 @@ class Person extends FlxSprite
 	{
 		attackTmr.start(0.333);
 		playAnim("punch", true, 0.333, () -> playAnim(inFloor ? "idle" : "jump"));
-		FlxG.sound.play("assets/sounds/" + (hit ? "hit" : "swipe") + FlxG.random.int(1, 3) + ".ogg").pitch = FlxG.random.float(0.9, 1.1);
+		FlxG.sound.play("assets/sounds/" + (hit ? "hit" : "swipe") + FlxG.random.int(1, 3) + ".ogg", 0.7).pitch = FlxG.random.float(0.8, 1);
 
 		if (hit)
 			FlxG.camera.shake(0.01, 0.05);

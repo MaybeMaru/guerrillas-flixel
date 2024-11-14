@@ -50,8 +50,6 @@ class PlayState extends FlxState
 
 		var cam = FlxG.cameras.add(new FlxCamera(), false);
 		cam.bgColor = FlxColor.TRANSPARENT;
-
-		FlxG.camera.bgColor = FlxColor.GRAY;
 		FlxG.mouse.visible = false;
 
 		var overlay:FlxGroup = new FlxGroup();
@@ -153,6 +151,16 @@ class PlayState extends FlxState
 
 	var playerBar:FlxBar;
 	var opponentBar:FlxBar;
+
+	public function win()
+	{
+		FlxG.switchState(new ResultState(true));
+	}
+
+	public function lose()
+	{
+		FlxG.switchState(new ResultState(false));
+	}
 
 	override function destroy()
 	{

@@ -16,6 +16,13 @@ class Player extends Person
 		facing = LEFT;
 	}
 
+	override function set_life(v:Float):Float
+	{
+		if (v <= 1)
+			cast(FlxG.state, PlayState).lose();
+		return super.set_life(v);
+	}
+
 	override function attack(hit:Bool)
 	{
 		var playerMidpoint = this.getMidpoint();

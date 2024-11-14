@@ -24,6 +24,13 @@ class Opponent extends Person
 
 	public var agro:Bool = true;
 
+	override function set_life(v:Float):Float
+	{
+		if (v <= 1)
+			cast(FlxG.state, PlayState).win();
+		return super.set_life(v);
+	}
+
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
