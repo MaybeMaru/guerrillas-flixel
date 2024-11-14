@@ -51,6 +51,65 @@ class Scene extends FlxGroup
 		switch (id)
 		{
 			case 0: // Area Rural
+				var sky = FlxGradient.createGradientFlxSprite(1, FlxG.height, [0xff8bb1ff, 0xff4c85f8], 1);
+				sky.scale.set(FlxG.width * 4, 1.5);
+				sky.scrollFactor.set(0, 0.1);
+				sky.y -= 100;
+				add(sky);
+
+				var clouds = new FlxBackdrop("assets/images/stage/clouds.png", X, 150);
+				clouds.setPosition(-150, 0);
+				clouds.scale.set(3, 3);
+				clouds.updateHitbox();
+				clouds.scrollFactor.set(0.12, 0.12);
+				clouds.blend = ADD;
+				clouds.alpha = 0.6;
+				clouds.velocity.x = 5;
+				add(clouds);
+
+				var mountains = new FlxBackdrop("assets/images/stage/mountains.png", X);
+				mountains.setPosition(200, 175);
+				mountains.scale.set(3, 3);
+				mountains.updateHitbox();
+				mountains.scrollFactor.set(0.2, 0.2);
+				mountains.color = 0xff88a6e1;
+				add(mountains);
+
+				var hills = new FlxBackdrop("assets/images/stage/hills.png", X);
+				hills.setPosition(200, 200);
+				hills.scale.set(3, 3);
+				hills.updateHitbox();
+				hills.scrollFactor.set(0.35, 0.35);
+				hills.color = 0xff88a6e1;
+				add(hills);
+
+				var house = new FlxSprite(-300, 150, "assets/images/stage/house.png");
+				house.scale.set(3, 3);
+				house.updateHitbox();
+				house.scrollFactor.set(0.45, 0.45);
+				house.color = 0xffdee4ef;
+				add(house);
+
+				var hills = new FlxBackdrop("assets/images/stage/hills.png", X);
+				hills.setPosition(-50, 275);
+				hills.flipX = true;
+				hills.scale.set(4, 4);
+				hills.updateHitbox();
+				hills.scrollFactor.set(0.5, 0.5);
+				add(hills);
+
+				var house = new FlxSprite(500, 150, "assets/images/stage/house.png");
+				house.scale.set(4.5, 4.5);
+				house.updateHitbox();
+				house.scrollFactor.set(0.7, 0.7);
+				add(house);
+
+				var floor = new FlxBackdrop("assets/images/stage/grass.png", X);
+				floor.y = floorY - 35;
+				floor.scale.set(3, 3);
+				floor.updateHitbox();
+				floor.screenCenter(X);
+				add(floor);
 
 			case 1: // Iglesia
 

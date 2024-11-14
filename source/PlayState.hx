@@ -23,6 +23,7 @@ class PlayState extends FlxState
 	var scene:Scene;
 
 	var pointData:PointData;
+	var levelID:Int;
 
 	public function new(pointData:PointData)
 	{
@@ -55,7 +56,7 @@ class PlayState extends FlxState
 
 		var overlay:FlxGroup = new FlxGroup();
 
-		var levelID:Int = switch (pointData.year)
+		levelID = switch (pointData.year)
 		{
 			case 1809: 1;
 			case 1810: 2;
@@ -129,9 +130,24 @@ class PlayState extends FlxState
 		timer.screenCenter(X);
 		timer.camera = cam;
 		add(timer);
+
+		music = "assets/music/" + (switch (levelID)
+		{
+			case 1: "jesus";
+			case 2: "aurresku";
+			default: "seguidillas";
+		}) + ".ogg";
+
+		FlxG.sound.cache(music);
 	}
 
-	public function startFight() {}
+	var music:String;
+
+	public function startFight()
+	{
+		FlxG.sound.playMusic(music);
+		FlxG.sound.music.fadeIn();
+	}
 
 	var timer:FlxText;
 
@@ -171,7 +187,7 @@ class PlayState extends FlxState
 		var maxZoom = 0.9;
 
 		var zoom = FlxMath.bound(FlxMath.remapToRange(dist, 0, minDist, maxZoom, minZoom), minZoom, maxZoom);
-		FlxG.camera.zoom = Math.max(0.55, zoom);
+		FlxG.camera.zoom = Math.max(0.6, zoom);
 
 		var playerOff = (player.x - (FlxG.width - player.width) / 2) / 4;
 		var isNeg = playerOff <= 0;
