@@ -8,6 +8,7 @@ import flixel.math.FlxPoint;
 class Player extends Person
 {
 	public var opponent:Opponent;
+	public var score:Int = 0;
 
 	public function new(levelID:Int)
 	{
@@ -46,7 +47,14 @@ class Player extends Person
 		{
 			opponent.hit();
 			super.attack(true);
+			score += 50;
 		}
+	}
+
+	override function hit()
+	{
+		super.hit();
+		score -= 25;
 	}
 
 	override function update(elapsed:Float)

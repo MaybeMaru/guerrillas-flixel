@@ -163,12 +163,12 @@ class PlayState extends FlxState
 
 	public function win()
 	{
-		FlxG.switchState(new ResultState(true));
+		FlxG.switchState(new ResultState(true, player.score));
 	}
 
 	public function lose()
 	{
-		FlxG.switchState(new ResultState(false));
+		FlxG.switchState(new ResultState(false, 0));
 	}
 
 	override function destroy()

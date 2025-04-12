@@ -70,11 +70,18 @@ class MapState extends FlxState
 		}));
 
 		FlxG.camera.fade(FlxColor.BLACK, 0.3, true);
+		FlxG.camera.bgColor = 0xffC8A774;
 		FlxG.sound.playMusic("assets/music/pepe-botellas.ogg");
 		FlxG.sound.music.fadeIn(1, 0, 0.8);
 
 		FlxG.mouse.visible = true;
 		FlxG.mouse.enabled = true;
+	}
+
+	override function destroy()
+	{
+		super.destroy();
+		FlxG.camera.bgColor = FlxColor.BLACK;
 	}
 
 	override function update(elapsed:Float)
@@ -101,8 +108,8 @@ class MapState extends FlxState
 		if (onTrans)
 			return;
 
-		FlxG.camera.scroll.x = (FlxG.mouse.screenX - (FlxG.width / 2)) / 100;
-		FlxG.camera.scroll.y = (FlxG.mouse.screenY - (FlxG.height / 2)) / 100;
+		FlxG.camera.scroll.x = (FlxG.game.mouseX - (FlxG.width / 2)) / 100;
+		FlxG.camera.scroll.y = (FlxG.game.mouseY - (FlxG.height / 2)) / 100;
 
 		points.members.sort((a, b) ->
 		{
