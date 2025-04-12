@@ -22,6 +22,7 @@ class PlayState extends FlxState
 	var objects:FlxGroup;
 	var scene:Scene;
 
+	var pause:PauseSubstate;
 	var pointData:PointData;
 	var levelID:Int;
 
@@ -76,6 +77,14 @@ class PlayState extends FlxState
 		objects.add(player);
 
 		persistentDraw = false;
+
+		this.destroySubStates = false;
+
+		pause = new PauseSubstate();
+		pause.camera = cam;
+
+		@:privateAccess // thanks flixel
+		pause._bgSprite.camera = cam;
 
 		var sub = new PresentSubstate(pointData);
 		sub.camera = cam;
@@ -182,8 +191,11 @@ class PlayState extends FlxState
 		elp += elapsed;
 		timer.text = FlxStringUtil.formatTime(elp);
 
-		if (FlxG.keys.justPressed.R)
-			FlxG.resetGame();
+		if (FlxG.keys.justPressed.ENTER)
+			openSubState(pause);
+
+		// if (FlxG.keys.justPressed.R)
+		//	FlxG.resetGame();
 	}
 
 	function zoomCamera()
