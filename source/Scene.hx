@@ -111,6 +111,16 @@ class Scene extends FlxGroup
 				floor.screenCenter(X);
 				add(floor);
 
+				var glow = new FlxSprite("assets/images/stage/veolaluz.png");
+				glow.setGraphicSize(FlxG.width * 1.2, FlxG.height * 1.2);
+				glow.updateHitbox();
+				glow.screenCenter();
+				glow.blend = ADD;
+				glow.scrollFactor.set(0.05, 0.05);
+				glow.camera = FlxG.cameras.list[FlxG.cameras.list.length - 1];
+				glow.alpha = 0.6;
+				overlay.add(glow);
+
 			case 1: // Iglesia
 
 				var back = new FlxSprite(0, 0, "assets/images/stage/church.png");

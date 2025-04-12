@@ -43,7 +43,11 @@ class ResultState extends FlxState
 		{
 			FlxG.sound.play("assets/sounds/win.ogg");
 
-			var spain = new FlxBackdrop("assets/images/spain.png");
+			var path = "assets/images/spain.png";
+			if (FlxG.random.bool(1)) // hehehe
+				path = "assets/images/republica.png";
+
+			var spain = new FlxBackdrop(path);
 			spain.scale.set(3, 3);
 			spain.updateHitbox();
 			spain.velocity.set(25, -25);
