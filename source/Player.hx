@@ -39,8 +39,7 @@ class Player extends Person
 
 			if (inDistance && opponent.inShield)
 			{
-				FlxG.camera.shake(0.005, 0.03);
-				FlxG.sound.play("assets/sounds/shield.ogg").pitch = FlxG.random.float(0.9, 1.1);
+				opponent.hitWithShield();
 			}
 		}
 		else

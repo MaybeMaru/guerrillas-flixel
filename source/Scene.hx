@@ -57,12 +57,24 @@ class Scene extends FlxGroup
 				sky.y -= 100;
 				add(sky);
 
+				var clouds = new FlxBackdrop("assets/images/stage/clouds.png", X, 50);
+				clouds.setPosition(200, 150);
+				clouds.scale.set(1.5, 1.5);
+				clouds.updateHitbox();
+				clouds.scrollFactor.set(0.08, 0.08);
+				clouds.blend = SCREEN;
+				clouds.alpha = 0.3;
+				clouds.velocity.x = 3;
+				clouds.color = 0xff407CD4;
+				clouds.flipX = true;
+				add(clouds);
+
 				var clouds = new FlxBackdrop("assets/images/stage/clouds.png", X, 150);
 				clouds.setPosition(-150, 0);
 				clouds.scale.set(3, 3);
 				clouds.updateHitbox();
 				clouds.scrollFactor.set(0.12, 0.12);
-				clouds.blend = ADD;
+				clouds.blend = SCREEN;
 				clouds.alpha = 0.6;
 				clouds.velocity.x = 5;
 				add(clouds);
@@ -93,12 +105,12 @@ class Scene extends FlxGroup
 				var hills = new FlxBackdrop("assets/images/stage/hills.png", X);
 				hills.setPosition(-50, 275);
 				hills.flipX = true;
-				hills.scale.set(4, 4);
+				hills.scale.set(4, 5);
 				hills.updateHitbox();
 				hills.scrollFactor.set(0.5, 0.5);
 				add(hills);
 
-				var house = new FlxSprite(500, 150, "assets/images/stage/house.png");
+				var house = new FlxSprite(500, 170, "assets/images/stage/house.png");
 				house.scale.set(4.5, 4.5);
 				house.updateHitbox();
 				house.scrollFactor.set(0.7, 0.7);
@@ -106,7 +118,7 @@ class Scene extends FlxGroup
 
 				var floor = new FlxBackdrop("assets/images/stage/grass.png", X);
 				floor.y = floorY - 35;
-				floor.scale.set(3, 3);
+				floor.scale.set(3, 4);
 				floor.updateHitbox();
 				floor.screenCenter(X);
 				add(floor);

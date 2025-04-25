@@ -82,12 +82,28 @@ class Person extends FlxSprite
 			if (inFloor)
 				hitFloor();
 		}
+
+		if (!inShield && leftShieldHits < 3)
+		{
+			regainShieldCooldown += elapsed;
+			if (regainShieldCooldown >= regainShieldTime)
+			{
+				regainShieldCooldown -= regainShieldTime;
+				leftShieldHits++;
+			}
+		}
 	}
 
 	var inShield:Bool = false;
+	var regainShieldCooldown:Float = 0;
+	var regainShieldTime:Float = 1.0;
+	var leftShieldHits:Int = 3;
 
 	function shield():Void
 	{
+		if (leftShieldHits <= 0)
+			return;
+
 		if (animation.curAnim.name != "shield")
 		{
 			FlxG.sound.play("assets/sounds/shield_equip.ogg").pitch = FlxG.random.float(0.9, 1);
@@ -101,6 +117,20 @@ class Person extends FlxSprite
 	function hit():Void
 	{
 		life -= weakness;
+	}
+
+	function hitWithShield()
+	{
+		FlxG.camera.shake(0.005, 0.03);
+		FlxG.sound.play("assets/sounds/shield.ogg").pitch = FlxG.random.float(0.9, 1.1);
+
+		leftShieldHits--;
+
+		if (leftShieldHits == 0)
+		{
+			inShield = false;
+			FlxG.sound.play("assets/sounds/shield_break.ogg").pitch = FlxG.random.float(0.9, 1.1);
+		}
 	}
 
 	var animTmr:FlxTimer = new FlxTimer();
