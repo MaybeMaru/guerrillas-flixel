@@ -64,7 +64,7 @@ class PlayState extends FlxState
 
 		player = new Player(levelID);
 		opponent = new Opponent(levelID, player);
-		player.opponent = opponent;
+		player.opponents.push(opponent);
 
 		scene = new Scene(levelID, overlay);
 		add(scene);
@@ -73,7 +73,8 @@ class PlayState extends FlxState
 		add(objects);
 		add(overlay);
 
-		objects.add(opponent);
+		for (opponent in player.opponents)
+			objects.add(opponent);
 		objects.add(player);
 
 		persistentDraw = false;

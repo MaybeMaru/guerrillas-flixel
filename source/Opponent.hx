@@ -22,14 +22,14 @@ class Opponent extends Person
 		retreatCooldown = FlxG.random.float(3, 6);
 	}
 
-	public var agro:Bool = true;
-
 	override function set_life(v:Float):Float
 	{
 		if (v <= 1)
 			cast(FlxG.state, PlayState).win();
 		return super.set_life(v);
 	}
+
+	public var agro:Bool = true;
 
 	override function update(elapsed:Float)
 	{
@@ -42,6 +42,7 @@ class Opponent extends Person
 	var retreatCooldown:Float = 0;
 	var attackCooldown:Float = 0;
 	var jumpCooldown:Float = 0;
+	var shieldCooldown:Float = 0;
 
 	override function attack(hit:Bool)
 	{
@@ -63,14 +64,14 @@ class Opponent extends Person
 		}
 		else
 		{
-			player.hit();
+			player.hit(oppMidpoint.x > playerMidpoint.x ? RIGHT : LEFT);
 			super.attack(true);
 		}
 	}
 
-	override function hit()
+	override function hit(dir)
 	{
-		super.hit();
+		super.hit(dir);
 		retreatCooldown -= FlxG.random.float(0.1, 0.3); // Recommend the opponent to back up
 	}
 
@@ -110,7 +111,24 @@ class Opponent extends Person
 		if (jumpCooldown > 0)
 			jumpCooldown -= elapsed;
 
+		if (shieldCooldown > 0)
+			shieldCooldown -= elapsed;
+
 		var dist = Math.abs(this.getMidpoint(FlxPoint.weak()).x - player.getMidpoint(FlxPoint.weak()).x);
+
+		// shield if fucked
+		if (shieldCooldown <= 0 && leftShieldHits > 0 && !inFloor && dist <= 90)
+		{
+			var shouldShield = (!player.attackTmr.finished && FlxG.random.bool(80)) // getting attacked
+				|| (life < 50 && FlxG.random.bool(50)) // at low health
+				|| (dist <= 90 && FlxG.random.bool(20)); // player is close
+
+			if (shouldShield)
+			{
+				shield();
+				shieldCooldown = FlxG.random.float(2, 4);
+			}
+		}
 
 		// Escape from player
 		if (escapeTimer > 0)
@@ -118,7 +136,7 @@ class Opponent extends Person
 			escapeTimer -= elapsed;
 			move((player.x < x) ? 1 : -1);
 		}
-		if (dist > 90)
+		else if (dist > 90)
 		{
 			// Approach player
 			if (approachCooldown <= 0)
@@ -128,7 +146,7 @@ class Opponent extends Person
 			}
 
 			// Random jump crap
-			if (jumpCooldown <= 0 && FlxG.random.float() < 0.1)
+			if (jumpCooldown <= 0 && FlxG.random.bool(10))
 			{
 				jump();
 				jumpCooldown = FlxG.random.float(3, 6);
@@ -137,7 +155,7 @@ class Opponent extends Person
 		else if (life > 50 || FlxG.random.bool(10)) // Stop either because good life or be stupid
 		{
 			// Attack when close enough
-			if (approachCooldown <= 0 && attackCooldown <= 0)
+			if (approachCooldown <= 0 && attackCooldown <= 0 && !inShield)
 			{
 				attack(false);
 				attackCooldown = FlxG.random.float(0.5, 1.25);

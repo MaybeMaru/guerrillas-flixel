@@ -111,8 +111,11 @@ class PresentSubstate extends FlxSubState
 					FlxTween.tween(bg, {alpha: 0}, 0.333, {
 						onComplete: (twn) ->
 						{
-							instance.opponent.agro = false;
-							new FlxTimer().start(0.1, (tmr) -> instance.opponent.agro = true);
+							for (opponent in instance.player.opponents)
+							{
+								opponent.agro = false;
+								new FlxTimer().start(0.1, (tmr) -> opponent.agro = true);
+							}
 
 							instance.startFight();
 							close();

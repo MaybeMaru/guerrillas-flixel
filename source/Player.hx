@@ -7,7 +7,7 @@ import flixel.math.FlxPoint;
 
 class Player extends Person
 {
-	public var opponent:Opponent;
+	public var opponents:Array<Opponent>;
 	public var score:Int = 0;
 
 	public function new(levelID:Int)
@@ -15,6 +15,7 @@ class Player extends Person
 		super(levelID, true);
 		x += 200;
 		facing = LEFT;
+		opponents = [];
 	}
 
 	override function set_life(v:Float):Float
@@ -26,33 +27,36 @@ class Player extends Person
 
 	override function attack(hit:Bool)
 	{
-		var playerMidpoint = this.getMidpoint();
-		var oppMidpoint = opponent.getMidpoint();
-
-		var distX = Math.abs(playerMidpoint.x - oppMidpoint.x);
-		var distY = Math.abs(playerMidpoint.y - oppMidpoint.y);
-		var inDistance:Bool = (distX <= 90 && distY <= 20);
-
-		if (!inDistance || opponent.inShield)
+		for (opponent in opponents)
 		{
-			super.attack(false);
+			var playerMidpoint = this.getMidpoint();
+			var oppMidpoint = opponent.getMidpoint();
 
-			if (inDistance && opponent.inShield)
+			var distX = Math.abs(playerMidpoint.x - oppMidpoint.x);
+			var distY = Math.abs(playerMidpoint.y - oppMidpoint.y);
+			var inDistance:Bool = (distX <= 90 && distY <= 20);
+
+			if (!inDistance || opponent.inShield)
 			{
-				opponent.hitWithShield();
+				super.attack(false);
+
+				if (inDistance && opponent.inShield)
+				{
+					opponent.hitWithShield();
+				}
 			}
-		}
-		else
-		{
-			opponent.hit();
-			super.attack(true);
-			score += 50;
+			else
+			{
+				opponent.hit(oppMidpoint.x > playerMidpoint.x ? RIGHT : LEFT);
+				super.attack(true);
+				score += 50;
+			}
 		}
 	}
 
-	override function hit()
+	override function hit(dir)
 	{
-		super.hit();
+		super.hit(dir);
 		score -= 25;
 	}
 

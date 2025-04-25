@@ -5,6 +5,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
+import flixel.util.FlxDirection;
 import flixel.util.FlxTimer;
 
 class Person extends FlxSprite
@@ -114,9 +115,21 @@ class Person extends FlxSprite
 
 	var weakness:Float = 3.333;
 
-	function hit():Void
+	var combo:Int = 0;
+
+	function hit(direction:FlxDirection):Void
 	{
 		life -= weakness;
+		combo = 0;
+
+		switch (direction)
+		{
+			case LEFT:
+				x += 10;
+			case RIGHT:
+				x -= 10;
+			default:
+		}
 	}
 
 	function hitWithShield()
@@ -153,7 +166,10 @@ class Person extends FlxSprite
 		FlxG.sound.play("assets/sounds/" + (hit ? "hit" : "swipe") + FlxG.random.int(1, 3) + ".ogg", 0.7).pitch = FlxG.random.float(0.8, 1);
 
 		if (hit)
+		{
 			FlxG.camera.shake(0.01, 0.05);
+			combo++;
+		}
 	}
 
 	var accelSpeed:Float = 20;
@@ -164,6 +180,11 @@ class Person extends FlxSprite
 	{
 		var canAnim = !inShield && inFloor && attackTmr.finished;
 		speedMult = inShield ? 0.4 : 1;
+
+		if (!inShield && !inFloor && attackTmr.finished && animation.curAnim.name != "jump")
+		{
+			playAnim('jump');
+		}
 
 		switch (dir)
 		{
