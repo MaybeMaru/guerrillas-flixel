@@ -120,6 +120,9 @@ class PauseSubstate extends FlxSubState
 
 	function changeSelection(change:Int)
 	{
+		if (change != 0)
+			FlxG.sound.play('assets/sounds/menuclick.ogg');
+
 		curSelection = FlxMath.wrap(curSelection + change, 0, items.length - 1);
 		for (i => txt in items)
 		{

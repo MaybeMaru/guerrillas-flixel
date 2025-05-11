@@ -124,6 +124,20 @@ class PlayState extends FlxState
 		namePlayer.x += playerBar.width - namePlayer.width;
 		add(namePlayer);
 
+		for (i in 0...3)
+		{
+			var oppShield = new ShieldUI(oppBack.x + (i * 50), oppBack.y + oppBack.height + 5, opponent);
+			oppShield.ID = 2 - i;
+			oppShield.camera = cam;
+			add(oppShield);
+
+			var playerShield = new ShieldUI(playerBack.x + playerBack.width - (i * 50), playerBack.y + playerBack.height + 5, player);
+			playerShield.ID = i;
+			playerShield.x -= playerShield.width;
+			playerShield.camera = cam;
+			add(playerShield);
+		}
+
 		var back = new FlxSprite(0, 60).makeGraphic(1, 1, FlxColor.BLACK);
 		back.scale.set(60, 30);
 		back.updateHitbox();

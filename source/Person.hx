@@ -49,6 +49,7 @@ class Person extends FlxSprite
 		acceleration.y = 1000;
 		maxVelocity.y = jumpForce;
 		maxVelocity.x = moveSpeed;
+		leftShieldHits = maxShieldHits;
 
 		setFacingFlip(LEFT, true, false);
 		setFacingFlip(RIGHT, false, false);
@@ -84,7 +85,7 @@ class Person extends FlxSprite
 				hitFloor();
 		}
 
-		if (!inShield && leftShieldHits < 3)
+		if (!inShield && leftShieldHits < maxShieldHits)
 		{
 			regainShieldCooldown += elapsed;
 			if (regainShieldCooldown >= regainShieldTime)
@@ -97,8 +98,10 @@ class Person extends FlxSprite
 
 	var inShield:Bool = false;
 	var regainShieldCooldown:Float = 0;
-	var regainShieldTime:Float = 1.0;
-	var leftShieldHits:Int = 3;
+	var regainShieldTime:Float = 5.0;
+	var maxShieldHits:Int = 3;
+
+	public var leftShieldHits:Int = 0;
 
 	function shield():Void
 	{
