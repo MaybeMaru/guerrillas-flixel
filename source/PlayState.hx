@@ -196,12 +196,34 @@ class PlayState extends FlxState
 
 	var elp:Float = 0;
 
+	// hacky collision fix
+	function checkColllision(person:Person):Void
+	{
+		FlxG.collide(objects, scene.collision);
+
+		var minX = scene.wall1.x + scene.wall1.width;
+		var maxX = scene.wall2.x;
+
+		if (person.x < minX)
+		{
+			person.x = minX;
+		}
+		else
+		{
+			var personRight = person.x + person.width;
+			if (personRight > maxX)
+				person.x = maxX - person.width;
+		}
+	}
+
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
 
 		zoomCamera();
-		FlxG.collide(objects, scene.collision);
+
+		checkColllision(player);
+		checkColllision(opponent);
 
 		elp += elapsed;
 		timer.text = FlxStringUtil.formatTime(elp);

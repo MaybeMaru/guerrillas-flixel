@@ -20,6 +20,9 @@ class Scene extends FlxGroup
 
 	var floorY:Float = 0;
 
+	public var wall1:FlxSprite;
+	public var wall2:FlxSprite;
+
 	public function new(sceneID:Int, overlay:FlxGroup)
 	{
 		super();
@@ -27,23 +30,31 @@ class Scene extends FlxGroup
 		this.overlay = overlay;
 
 		collision = new FlxTypedGroup<FlxObject>();
-		add(collision);
 
 		floorY = FlxG.height - 60;
 
-		var wall1 = new FlxSprite(-600, -800).makeGraphic(5, FlxG.height * 4, FlxColor.LIME);
+		wall1 = new FlxSprite(-600, -800).makeGraphic(1, 1, FlxColor.LIME);
+		wall1.setGraphicSize(100, FlxG.height * 4);
+		wall1.updateHitbox();
+		wall1.x -= wall1.width;
 		collision.add(wall1);
 
-		var wall2 = new FlxSprite(FlxG.width + 600, -800, wall1.graphic);
+		wall2 = new FlxSprite(FlxG.width + 600, -800, wall1.graphic);
+		wall2.setGraphicSize(wall1.width, wall1.height);
+		wall2.updateHitbox();
 		collision.add(wall2);
 
-		wall1.visible = wall2.visible = false;
+		// wall1.visible = wall2.visible = false;
 
 		FlxG.worldBounds.set(-4000, -4000, 8000, 8000);
+
+		loadMap(sceneID);
+
 		for (i in collision.members)
 			i.immovable = true;
 
-		loadMap(sceneID);
+		collision.visible = false;
+		add(collision);
 	}
 
 	function loadMap(id:Int)
